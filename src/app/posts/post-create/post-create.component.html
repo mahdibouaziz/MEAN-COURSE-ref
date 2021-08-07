@@ -1,8 +1,8 @@
 <mat-card>
-  <form (submit)="onAddPost(postForm)" #postForm="ngForm">
+  <form (submit)="onSavePost(postForm)" #postForm="ngForm">
     <mat-form-field>
       <input
-        ngModel
+        [ngModel]="post ? post.title : ''"
         name="title"
         required
         matInput
@@ -15,7 +15,7 @@
 
     <mat-form-field>
       <textarea
-        ngModel
+        [ngModel]="post ? post.content : ''"
         required
         name="content"
         #content="ngModel"

@@ -1,0 +1,21 @@
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+  color: #fff;
+  padding: 0.4rem;
+}
+
+/* a:hover {
+  text-decoration: none;
+  color: #fff;
+  padding: 0.4rem;
+} */
+
+.spacer {
+  flex: 1 1 auto;
+}
