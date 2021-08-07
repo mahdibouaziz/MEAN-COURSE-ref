@@ -51,6 +51,7 @@ export class PostsService {
         post.id = postId;
         this.posts.push(post);
         this.postsUpdated.next([...this.posts]);
+        this.router.navigate(['/']);
       },
       (err) => {
         console.log(err);
