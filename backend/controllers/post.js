@@ -23,8 +23,8 @@ exports.getPost = async (req, res, next) => {
 };
 
 exports.createPost = async (req, res, next) => {
-  console.log(req.file); // our image is here
-  const url = req.protocol + "://" + req.getPost("host");
+  // console.log(req.file); // our image is here
+  const url = req.protocol + "://" + req.get("host");
   const post = new Post({
     title: req.body.title,
     content: req.body.content,
