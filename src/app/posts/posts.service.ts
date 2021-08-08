@@ -12,29 +12,43 @@ const url = 'http://localhost:3000/api/posts';
 })
 export class PostsService {
   private posts: Post[] = [];
-  private postsUpdated = new Subject<Post[]>();
+  private postsUpdated = new Subject<{ posts: Post[]; totalPosts: number }>();
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  getPosts(): void {
+  getPosts(currentPage: number, postsPerPage: number): void {
+    const queryParams = `?page=${currentPage}&postsPerPage=${postsPerPage}`;
     this.http
-      .get<{ message: string; posts: any }>(url)
+      .get<{
+        totalPages: number;
+        totalPosts: number;
+        currentPage: number;
+        posts: any;
+      }>(url + queryParams)
       .pipe(
         map((postData) => {
-          return postData.posts.map((post: any) => {
-            return {
-              title: post.title,
-              content: post.content,
-              id: post._id,
-              imagePath: post.imagePath,
-            };
-          });
+          return {
+            totalPages: postData.totalPages,
+            totalPosts: postData.totalPosts,
+            currentPage: postData.currentPage,
+            posts: postData.posts.map((post: any) => {
+              return {
+                title: post.title,
+                content: post.content,
+                id: post._id,
+                imagePath: post.imagePath,
+              };
+            }),
+          };
         })
       )
       .subscribe(
         (result) => {
-          this.posts = result;
-          this.postsUpdated.next([...this.posts]);
+          this.posts = result.posts;
+          this.postsUpdated.next({
+            posts: [...this.posts],
+            totalPosts: result.totalPosts,
+          });
         },
         (err) => {
           console.log(err);
@@ -52,15 +66,6 @@ export class PostsService {
 
     this.http.post<{ message: string; post: Post }>(url, postData).subscribe(
       (result) => {
-        const post: Post = {
-          id: result.post.id,
-          title,
-          content,
-          imagePath: result.post.imagePath,
-        };
-        // console.log(result);
-        this.posts.push(post);
-        this.postsUpdated.next([...this.posts]);
         this.router.navigate(['/']);
       },
       (err) => {
@@ -70,16 +75,7 @@ export class PostsService {
   }
 
   deletePost(postId: string) {
-    return this.http.delete(`${url}/${postId}`).subscribe(
-      (result) => {
-        const updatedPost = this.posts.filter((post) => post.id != postId);
-        this.posts = updatedPost;
-        this.postsUpdated.next([...this.posts]);
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
+    return this.http.delete(`${url}/${postId}`);
   }
 
   updatePost(id: string, title: string, content: string, image: File | string) {
@@ -95,18 +91,6 @@ export class PostsService {
     }
     this.http.put(`${url}/${id}`, postData).subscribe(
       (result: any) => {
-        const updatedPosts = [...this.posts];
-        const oldPostIndex = updatedPosts.findIndex((p) => p.id === id);
-        const post: Post = {
-          id,
-          title,
-          content,
-          imagePath: result.post.imagePath,
-        };
-        updatedPosts[oldPostIndex] = post;
-        this.posts = updatedPosts;
-        this.postsUpdated.next([...this.posts]);
-
         this.router.navigate(['/']);
       },
       (err) => {
