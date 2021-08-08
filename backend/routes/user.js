@@ -7,7 +7,21 @@ const router = express.Router();
 
 /* ALL REQUESTS UNDER  /api/users */
 
-router.post("/login", userController.login);
+router.post(
+  "/login",
+  [
+    body("email")
+      .exists({ checkFalsy: true, checkNull: true })
+      .withMessage("Email is required")
+      .isEmail()
+      .withMessage("Invalid Email"),
+    body("password")
+      .trim()
+      .exists({ checkFalsy: true, checkNull: true })
+      .withMessage("Password is required"),
+  ],
+  userController.login
+);
 
 router.post(
   "/signup",
