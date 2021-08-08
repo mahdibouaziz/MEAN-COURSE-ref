@@ -24,14 +24,24 @@ exports.getPost = async (req, res, next) => {
 
 exports.createPost = async (req, res, next) => {
   console.log(req.file); // our image is here
+  const url = req.protocol + "://" + req.getPost("host");
   const post = new Post({
     title: req.body.title,
     content: req.body.content,
+    imagePath: url + "/images/" + req.file.filename,
   });
 
   try {
     await post.save();
-    return res.status(201).json({ message: "Post created", postId: post._id });
+    return res.status(201).json({
+      message: "Post created",
+      post: {
+        id: post._id,
+        content: post.content,
+        title: post.title,
+        imagePath: post.imagePath,
+      },
+    });
   } catch (err) {
     asyncError(err, next);
   }

@@ -26,6 +26,7 @@ export class PostsService {
               title: post.title,
               content: post.content,
               id: post._id,
+              imagePath: post.imagePath,
             };
           });
         })
@@ -49,20 +50,23 @@ export class PostsService {
     postData.append('content', content);
     postData.append('image', image, title);
 
-    this.http
-      .post<{ message: string; postId: string }>(url, postData)
-      .subscribe(
-        (result) => {
-          const post: Post = { id: result.postId, title, content };
-          // console.log(result);
-          this.posts.push(post);
-          this.postsUpdated.next([...this.posts]);
-          this.router.navigate(['/']);
-        },
-        (err) => {
-          console.log(err);
-        }
-      );
+    this.http.post<{ message: string; post: Post }>(url, postData).subscribe(
+      (result) => {
+        const post: Post = {
+          id: result.post.id,
+          title,
+          content,
+          imagePath: result.post.imagePath,
+        };
+        // console.log(result);
+        this.posts.push(post);
+        this.postsUpdated.next([...this.posts]);
+        this.router.navigate(['/']);
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
   }
 
   deletePost(postId: string) {
@@ -79,7 +83,7 @@ export class PostsService {
   }
 
   updatePost(id: string, title: string, content: string) {
-    const post: Post = { id, title, content };
+    const post: Post = { id, title, content, imagePath: '' };
     this.http.put(`${url}/${id}`, post).subscribe(
       (result) => {
         const updatedPosts = [...this.posts];
