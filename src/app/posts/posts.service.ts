@@ -41,22 +41,28 @@ export class PostsService {
       );
   }
 
-  addPost(title: string, content: string) {
-    const post: Post = { id: '', title, content };
+  addPost(title: string, content: string, image: File) {
+    // const post: Post = { id: '', title, content };
 
-    this.http.post<{ message: string; postId: string }>(url, post).subscribe(
-      (result) => {
-        console.log(result);
-        const postId = result.postId;
-        post.id = postId;
-        this.posts.push(post);
-        this.postsUpdated.next([...this.posts]);
-        this.router.navigate(['/']);
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
+    const postData = new FormData();
+    postData.append('title', title);
+    postData.append('content', content);
+    postData.append('image', image, title);
+
+    this.http
+      .post<{ message: string; postId: string }>(url, postData)
+      .subscribe(
+        (result) => {
+          const post: Post = { id: result.postId, title, content };
+          // console.log(result);
+          this.posts.push(post);
+          this.postsUpdated.next([...this.posts]);
+          this.router.navigate(['/']);
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
   }
 
   deletePost(postId: string) {
