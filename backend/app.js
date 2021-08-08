@@ -6,6 +6,7 @@ const multer = require("multer");
 const path = require("path");
 
 const postRouter = require("./routes/post");
+const userRouter = require("./routes/user");
 
 const app = express();
 
@@ -66,6 +67,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use("/api/posts", postRouter);
+app.use("/api/users", userRouter);
 
 app.use((err, req, res, next) => {
   console.log(err);
