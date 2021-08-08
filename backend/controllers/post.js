@@ -49,12 +49,18 @@ exports.createPost = async (req, res, next) => {
 
 exports.updatePost = async (req, res, next) => {
   try {
-    await Post.updateOne(
+    // console.log(req.file);
+    let imagePath = req.body.imagePath;
+    if (req.file) {
+      const url = req.protocol + "://" + req.get("host");
+      imagePath = url + "/images/" + req.file.filename;
+    }
+    const post = await Post.updateOne(
       { _id: req.params.postId },
-      { title: req.body.title, content: req.body.content }
+      { title: req.body.title, content: req.body.content, imagePath }
     );
     // console.log(post);
-    res.status(200).json({ message: "Post Updated" });
+    res.status(200).json({ message: "Post Updated", post });
   } catch (err) {
     asyncError(err, next);
   }
