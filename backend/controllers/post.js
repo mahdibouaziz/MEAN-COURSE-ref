@@ -3,11 +3,28 @@ const Post = require("../models/post");
 
 exports.getPosts = async (req, res, next) => {
   try {
-    const posts = await Post.find({}).exec();
+    // for the pagnation we need: currentPage, postsPerPage, totalPosts, totalPages
+    const currentPage = +req.query.page || 0;
+    const postsPerPage = +req.query.postsPerPage || 3;
+    const totalPosts = await Post.find().countDocuments();
+    const totalPages = Math.ceil(totalPosts / postsPerPage);
+
+    const posts = await Post.find()
+      .skip(currentPage * postsPerPage)
+      .limit(postsPerPage);
+
     return res.status(200).json({
-      message: "Post fetched succesfully",
+      totalPages,
+      totalPosts,
+      currentPage,
       posts,
     });
+
+    // const posts = await Post.find({}).exec();
+    // return res.status(200).json({
+    //   message: "Post fetched succesfully",
+    //   posts,
+    // });
   } catch (err) {
     asyncError(err, next);
   }
