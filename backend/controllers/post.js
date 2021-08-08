@@ -23,6 +23,7 @@ exports.getPost = async (req, res, next) => {
 };
 
 exports.createPost = async (req, res, next) => {
+  console.log(req.file); // our image is here
   const post = new Post({
     title: req.body.title,
     content: req.body.content,
