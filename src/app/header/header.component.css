@@ -5,7 +5,8 @@ ul {
   display: flex;
 }
 
-a {
+a,
+button {
   text-decoration: none;
   color: #fff;
   padding: 0.4rem;

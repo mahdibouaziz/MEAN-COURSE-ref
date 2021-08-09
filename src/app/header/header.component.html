@@ -4,20 +4,24 @@
   </span>
   <div class="spacer"></div>
   <ul>
-    <li>
+    <li *ngIf="isAuthenticated">
       <a routerLink="/create" mat-button routerLinkActive="mat-accent"
         >New Post</a
       >
     </li>
 
-    <li>
+    <li *ngIf="!isAuthenticated">
       <a routerLink="/login" mat-button routerLinkActive="mat-accent">Login</a>
     </li>
 
-    <li>
+    <li *ngIf="!isAuthenticated">
       <a routerLink="/signup" mat-button routerLinkActive="mat-accent"
         >signup</a
       >
+    </li>
+
+    <li *ngIf="isAuthenticated">
+      <button mat-button>Logout</button>
     </li>
   </ul>
 </mat-toolbar>
