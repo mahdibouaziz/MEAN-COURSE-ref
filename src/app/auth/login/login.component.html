@@ -33,7 +33,13 @@
       >
     </mat-form-field>
 
-    <button mat-raised-button class="login-button" color="accent" type="submit">
+    <button
+      mat-raised-button
+      class="login-button"
+      *ngIf="!isLoading"
+      color="accent"
+      type="submit"
+    >
       Login
     </button>
   </form>

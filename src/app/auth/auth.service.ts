@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { AuthData } from '../models/auth-data.model';
 
@@ -13,7 +14,7 @@ export class AuthService {
   public isAuthenticated = false;
   private authStatusListener = new Subject<boolean>();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   getToken(): string {
     return this.token;
@@ -32,6 +33,7 @@ export class AuthService {
     this.http.post(`${url}/signup`, authData).subscribe(
       (result) => {
         console.log(result);
+        this.router.navigate(['/login']);
       },
       (err) => {
         console.log(err);
@@ -48,6 +50,7 @@ export class AuthService {
         if (this.token) {
           this.isAuthenticated = true;
           this.authStatusListener.next(true);
+          this.router.navigate(['/']);
         }
       },
       (err) => {
@@ -60,5 +63,6 @@ export class AuthService {
     this.token = null;
     this.isAuthenticated = false;
     this.authStatusListener.next(false);
+    this.router.navigate(['/']);
   }
 }
