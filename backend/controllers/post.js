@@ -79,7 +79,12 @@ exports.updatePost = async (req, res, next) => {
     }
     const post = await Post.updateOne(
       { _id: req.params.postId, creator },
-      { title: req.body.title, content: req.body.content, imagePath }
+      {
+        title: req.body.title,
+        content: req.body.content,
+        imagePath,
+        creator,
+      }
     );
     console.log(post);
     if (post.nModified > 0) {
