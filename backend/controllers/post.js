@@ -41,11 +41,16 @@ exports.getPost = async (req, res, next) => {
 
 exports.createPost = async (req, res, next) => {
   // console.log(req.file); // our image is here
+  const creator = req.userId;
+  if (!creator) {
+    syncError("Invalid user", 422);
+  }
   const url = req.protocol + "://" + req.get("host");
   const post = new Post({
     title: req.body.title,
     content: req.body.content,
     imagePath: url + "/images/" + req.file.filename,
+    creator,
   });
 
   try {
@@ -66,18 +71,22 @@ exports.createPost = async (req, res, next) => {
 
 exports.updatePost = async (req, res, next) => {
   try {
-    // console.log(req.file);
+    const creator = req.userId;
     let imagePath = req.body.imagePath;
     if (req.file) {
       const url = req.protocol + "://" + req.get("host");
       imagePath = url + "/images/" + req.file.filename;
     }
     const post = await Post.updateOne(
-      { _id: req.params.postId },
+      { _id: req.params.postId, creator },
       { title: req.body.title, content: req.body.content, imagePath }
     );
-    // console.log(post);
-    res.status(200).json({ message: "Post Updated", post });
+    console.log(post);
+    if (post.nModified > 0) {
+      res.status(200).json({ message: "Post Updated", post });
+    } else {
+      res.status(401).json({ message: "Not authoriezed" });
+    }
   } catch (err) {
     asyncError(err, next);
   }
@@ -85,9 +94,15 @@ exports.updatePost = async (req, res, next) => {
 
 exports.deletePost = async (req, res, next) => {
   try {
+    creator = req.userId;
     const postId = req.params.postId;
-    await Post.deleteOne({ _id: postId });
-    res.status(200).json({ message: "Post deleted" });
+    const result = await Post.deleteOne({ _id: postId, creator });
+    console.log(result);
+    if (result.deletedCount > 0) {
+      res.status(200).json({ message: "Post deleted" });
+    } else {
+      res.status(401).json({ message: "Unauthorized" });
+    }
   } catch (err) {
     asyncError(err, next);
   }
