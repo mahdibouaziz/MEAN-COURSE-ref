@@ -42,7 +42,7 @@ export class AuthService {
         this.router.navigate(['/login']);
       },
       (err) => {
-        console.log(err);
+        this.authStatusListener.next(false);
       }
     );
   }
@@ -69,7 +69,7 @@ export class AuthService {
         }
       },
       (err) => {
-        console.log(err);
+        this.authStatusListener.next(false);
       }
     );
   }
