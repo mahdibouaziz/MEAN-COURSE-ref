@@ -87,7 +87,7 @@ exports.updatePost = async (req, res, next) => {
       }
     );
     console.log(post);
-    if (post.nModified > 0) {
+    if (post.n > 0) {
       res.status(200).json({ message: "Post Updated", post });
     } else {
       res.status(401).json({ message: "Not authoriezed" });
