@@ -41,7 +41,7 @@ exports.login = async (req, res, next) => {
         userId: user._id.toString(),
         email: user.email,
       },
-      "thisisthebestsecreteverever",
+      process.env.JWT_KEY,
       {
         expiresIn: "1h",
       }

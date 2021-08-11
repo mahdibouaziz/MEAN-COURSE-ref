@@ -10,8 +10,7 @@ const userRouter = require("./routes/user");
 
 const app = express();
 
-const MONGODB_URI =
-  "mongodb+srv://mahdi:mahdi123@cluster0.sr2ks.mongodb.net/node-angular?retryWrites=true&w=majority";
+const MONGODB_URI = `mongodb+srv://mahdi:${process.env.MONGO_ATLAS_PW}@cluster0.sr2ks.mongodb.net/node-angular?retryWrites=true&w=majority`;
 
 mongoose
   .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })

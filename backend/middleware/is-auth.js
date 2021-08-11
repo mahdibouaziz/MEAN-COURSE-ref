@@ -21,7 +21,7 @@ const isAuth = (req, res, next) => {
   // step3
   let decodedToken;
   try {
-    decodedToken = jwt.verify(token, "thisisthebestsecreteverever");
+    decodedToken = jwt.verify(token, process.env.JWT_KEY);
   } catch (err) {
     err.statusCode = 500;
     throw err;
