@@ -4,8 +4,9 @@ import { Subject } from 'rxjs';
 import { Post } from '../models/post.model';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
-const url = 'http://localhost:3000/api/posts';
+const url = `${environment.apiUrl}/posts`;
 
 @Injectable({
   providedIn: 'root',

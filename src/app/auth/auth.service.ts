@@ -3,8 +3,9 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { AuthData } from '../models/auth-data.model';
+import { environment } from 'src/environments/environment';
 
-const url = 'http://localhost:3000/api/users';
+const url = `${environment.apiUrl}/users`;
 
 @Injectable({
   providedIn: 'root',
